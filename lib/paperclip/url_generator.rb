@@ -8,11 +8,9 @@ module Paperclip
     end
 
     def for(style_name, options)
-      escape_url_as_needed(
-        timestamp_as_needed(
-          @attachment_options[:interpolator].interpolate(most_appropriate_url, @attachment, style_name),
-          options
-      ), options)
+      url = timestamp_as_needed(@attachment_options[:interpolator].interpolate(most_appropriate_url, @attachment, style_name), options)
+      url = storage_domain_as_needed(url)
+      escape_url_as_needed(url, options)
     end
 
     private
@@ -47,6 +45,14 @@ module Paperclip
 
     def timestamp_possible?
       @attachment.respond_to?(:updated_at) && @attachment.updated_at.present?
+    end
+    
+    def storage_domain_as_needed(url)
+      if @attachment.storage_domain
+        url[/^http\:\/\//] ? url.sub(/http\:\/\/.*?\//, "http://#{@attachment.storage_domain}/") : "http://#{@attachment.storage_domain}#{url}"
+      else
+        url
+      end
     end
 
     def escape_url_as_needed(url, options)

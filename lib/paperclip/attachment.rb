@@ -78,6 +78,7 @@ module Paperclip
       @url_generator         = options[:url_generator].new(self, @options)
       @source_file_options   = options[:source_file_options]
       @whiny                 = options[:whiny]
+      @storage_domain        = options[:storage_domain]
 
       initialize_storage
     end
@@ -99,6 +100,7 @@ module Paperclip
       instance_write(:file_name,       cleanup_filename(file.original_filename))
       instance_write(:content_type,    file.content_type.to_s.strip)
       instance_write(:file_size,       file.size)
+      instance_write(:storage_domain,  @storage_domain)
       instance_write(:fingerprint,     file.fingerprint) if instance_respond_to?(:fingerprint)
       instance_write(:created_at,      Time.now) if has_enabled_but_unset_created_at?
       instance_write(:updated_at,      Time.now)
@@ -271,6 +273,12 @@ module Paperclip
     # in the <attachment>_content_type attribute of the model.
     def content_type
       instance_read(:content_type)
+    end
+    
+    # Returns the storage_domain of the file as originally assigned, and lives
+    # in the <attachment>_storage_domain attribute of the model.
+    def storage_domain
+      instance_read(:storage_domain)
     end
 
     # Returns the creation time of the file as originally assigned, and
@@ -468,6 +476,7 @@ module Paperclip
       instance_write(:file_name, nil)
       instance_write(:content_type, nil)
       instance_write(:file_size, nil)
+      instance_write(:storage_domain, nil)
       instance_write(:fingerprint, nil)
       instance_write(:created_at, nil) if has_enabled_but_unset_created_at?
       instance_write(:updated_at, nil)

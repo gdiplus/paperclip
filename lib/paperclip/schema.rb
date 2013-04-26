@@ -6,7 +6,8 @@ module Paperclip
     COLUMNS = {:file_name    => :string,
                :content_type => :string,
                :file_size    => :integer,
-               :updated_at   => :datetime}
+               :updated_at   => :datetime,
+               :storage_domain  => :string}
 
     def self.included(base)
       ActiveRecord::ConnectionAdapters::Table.send :include, TableDefinition
