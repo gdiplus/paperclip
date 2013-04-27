@@ -162,6 +162,7 @@ module Paperclip
     def path(style_name = default_style)
       path = original_filename.nil? ? nil : interpolate(path_option, style_name)
       path.respond_to?(:unescape) ? path.unescape : path
+      path.sub(/publichttp\:\/\/.*?\//, 'public/')
     end
 
     # Alias to +url+
